@@ -47,7 +47,7 @@ export function TagCard({ tag, onPress }) {
 
       <View style={styles.bottomRow}>
         <View style={styles.plateCol}>
-          {tag.plate ? <NumberPlate number={tag.plate} scale={0.7} /> : null}
+          {tag.plate ? <NumberPlate number={tag.plate} scale={0.95} /> : null}
         </View>
 
         <View style={styles.divider} />
@@ -103,14 +103,14 @@ const styles = StyleSheet.create({
   carImage: { width: '100%', height: 140, alignSelf: 'center' },
 
   bottomRow: { flexDirection: 'row', alignItems: 'center' },
-  plateCol: { flex: 4, alignItems: 'stretch', justifyContent: 'center' },
+  plateCol: { flex: 6, alignItems: 'stretch', justifyContent: 'center' },
   divider: {
     width: StyleSheet.hairlineWidth,
     alignSelf: 'stretch',
     backgroundColor: colors.border,
     marginHorizontal: spacing.md,
   },
-  infoCol: { flex: 6, alignItems: 'flex-end' },
+  infoCol: { flex: 4, alignItems: 'flex-end' },
   infoLabel: {
     fontSize: 11,
     fontWeight: '600',
