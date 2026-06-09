@@ -8,21 +8,20 @@ import {
   Alert,
   Switch,
   ActivityIndicator,
+  Pressable,
+  Clipboard,
+  Platform,
+  ScrollView,
 } from 'react-native';
+import { Copy, Share2 } from 'lucide-react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
-import {
-  getCar,
-  getQr,
-  rotateQr,
-  deleteCar,
-  updateDisplay,
-} from '../api/cars';
-import { colors, radius, spacing } from '../theme';
+import { getCar, getQr, rotateQr, deleteCar, updateDisplay } from '../api/cars';
+import { colors, radius, spacing, shadow } from '../theme';
 
 const TOGGLES = [
-  { key: 'showLabel', label: 'Show label on scan page' },
+  { key: 'showLabel', label: 'Show label on scan' },
   { key: 'allowMessage', label: 'Allow text messages' },
   { key: 'allowCall', label: 'Allow anonymous call' },
 ];
@@ -37,13 +36,24 @@ export function CarDetailScreen({ route, navigation }) {
   async function onShare() {
     if (!qr.data) return;
     await Share.share({
-      message: `Scan or open to reach me about my car: ${qr.data.shareUrl}`,
+      message: `Contact me about my car: ${qr.data.shareUrl}`,
       url: qr.data.shareUrl,
     });
   }
 
+  function onCopy() {
+    const url = qr.data?.shareUrl;
+    if (!url) return;
+    try {
+      Clipboard.setString(url);
+      Alert.alert('Copied', 'Public link copied to clipboard.');
+    } catch {
+      onShare();
+    }
+  }
+
   async function onRotate() {
-    Alert.alert('Rotate QR?', 'The old printed sticker will stop working.', [
+    Alert.alert('Rotate QR Code?', 'The old sticker will stop working immediately. Continue?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Rotate',
@@ -62,88 +72,180 @@ export function CarDetailScreen({ route, navigation }) {
   }
 
   async function onDelete() {
-    Alert.alert('Delete car?', 'This removes the car and its QR.', [
+    Alert.alert('Delete Car Profile?', 'This action cannot be undone.', [
       { text: 'Cancel', style: 'cancel' },
       {
-        text: 'Delete',
+        text: 'Delete Permanently',
         style: 'destructive',
         onPress: async () => {
           await deleteCar(carId);
           await qc.invalidateQueries({ queryKey: ['cars'] });
-          navigation.navigate('Main');
+          navigation.goBack();
         },
       },
     ]);
   }
 
-  const settings = car.data?.settings;
-  const title =
-    car.data?.nickname ||
-    [car.data?.color, car.data?.make, car.data?.model].filter(Boolean).join(' ') ||
-    'Car';
+  const title = car.data?.nickname || 'Your Car';
+  const settings = car.data?.settings || {};
 
   return (
-    <Screen title={title}>
-      <View style={styles.qrCard}>
-        {qr.isLoading ? (
-          <ActivityIndicator color={colors.primary} />
-        ) : qr.data ? (
-          <>
-            <Image source={{ uri: qr.data.pngDataUrl }} style={styles.qr} resizeMode="contain" />
-            <Text style={styles.url} numberOfLines={1}>
-              {qr.data.shareUrl}
-            </Text>
-          </>
-        ) : (
-          <Text style={styles.muted}>QR unavailable.</Text>
-        )}
-      </View>
+ 
+      <ScrollView
+        contentContainerStyle={[  styles.scrollContent, {backgroundColor: 'white' }]}
+        showsVerticalScrollIndicator={false}>
 
-      <Button label="Share / print sticker" onPress={onShare} />
-      <Button label="Rotate QR (revoke old)" variant="ghost" onPress={onRotate} />
+        {/* Hero QR Card */}
+        <View style={{}}>
+          {qr.isLoading ? (
+            <View style={styles.loader}>
+              <ActivityIndicator color={colors.primary} />
+            </View>
+          ) : (
+            <>
+            <View style={{ borderRadius: radius.xl,padding: spacing.md, alignItems: 'center'}}>
+              <View style={{ position: 'relative', borderRadius: radius.xl, padding: spacing.md, alignItems: 'center'}}>
+                <View style={{ position: 'absolute', top: 8, left: 8, height: 40, width: 40, borderLeftWidth: 4, borderTopWidth: 4 }} />
+                <View style={{ position: 'absolute', top: 8, right: 8, height: 40, width: 40, borderRightWidth: 4, borderTopWidth: 4 }} />
+                <View style={{ position: 'absolute', bottom: 8, left: 8, height: 40, width: 40, borderLeftWidth: 4, borderBottomWidth: 4 }} />
+                <View style={{ position: 'absolute', bottom: 8, right: 8, height: 40, width: 40, borderRightWidth: 4, borderBottomWidth: 4 }} />
+              <Image source={{ uri: qr.data?.pngDataUrl }} style={styles.qr} />
+              </View>
+              </View>
+              <View style={styles.linkRow}>
+                <View style={styles.urlPill}>
+                  <Text style={styles.urlText} numberOfLines={1}>
+                    {qr.data?.shareUrl?.replace(/^https?:\/\//, '')}
+                  </Text>
+                  <Pressable style={styles.copyBtn} onPress={onCopy} hitSlop={6}>
+                    <Copy size={18} color={colors.text} strokeWidth={2.2} />
+                  </Pressable>
+                </View>
 
-      <Text style={styles.section}>Scan-page permissions</Text>
-      {settings
-        ? TOGGLES.map(t => (
-            <View key={t.key} style={styles.row}>
+                <Pressable style={styles.shareBtn} onPress={onShare} hitSlop={6}>
+                  <Share2 size={18} color="#fff" strokeWidth={2.2} />
+                </Pressable>
+              </View>
+            </>
+          )}
+        </View>
+
+        {/* Primary Actions */}
+        <View style={styles.actionRow}>
+          <Button label="Share / Print" onPress={onShare} style={styles.flexBtn} />
+          <Button label="Rotate QR" variant="ghost" onPress={onRotate} style={styles.flexBtn} />
+        </View>
+
+        {/* Settings Group */}
+        <Text style={styles.sectionHeader}>Scan Page Privacy</Text>
+        <View style={styles.settingsGroup}>
+          {TOGGLES.map((t, i) => (
+            <View key={t.key} style={[styles.row, i !== TOGGLES.length - 1 && styles.borderBottom]}>
               <Text style={styles.rowLabel}>{t.label}</Text>
               <Switch
-                value={Boolean(settings[t.key])}
-                onValueChange={v => onToggle(t.key, v)}
+                value={!!settings[t.key]}
+                onValueChange={(val) => onToggle(t.key, val)}
                 trackColor={{ true: colors.primary, false: colors.border }}
               />
             </View>
-          ))
-        : null}
+          ))}
+        </View>
 
-      <Button label="Delete car" variant="ghost" onPress={onDelete} style={styles.delete} />
-    </Screen>
+        {/* Danger Zone */}
+        <Button 
+          label="Delete Car Profile" 
+          variant="primary" 
+          onPress={onDelete} 
+          style={styles.dangerButton} 
+        />
+        
+      </ScrollView>
+
   );
 }
 
 const styles = StyleSheet.create({
-  qrCard: {
-    backgroundColor: '#fff',
-    borderRadius: radius.lg,
-    padding: spacing.lg,
+  scrollContent: { padding: spacing.lg, paddingBottom: 120 },
+  title: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: colors.text,
+    letterSpacing: -0.6,
+    marginBottom: spacing.lg,
+  },
+  heroCard: {
+
+    borderRadius: radius.xl,
+    padding: spacing.xl,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.08, shadowRadius: 24 },
+      android: { elevation: 8 },
+    }),
+  },
+  qr: { width: 220, height: 220, borderRadius: radius.md },
+  loader: { width: 220, height: 220, justifyContent: 'center' },
+  linkRow: {
+    flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
+    width: '100%',
+    marginTop: spacing.lg,
   },
-  qr: { width: 240, height: 240 },
-  url: { color: '#333', fontSize: 12 },
-  section: { color: colors.text, fontSize: 16, fontWeight: '700', marginTop: spacing.md },
-  row: {
+  urlPill: {
+    flex: 1,
+    height: 56,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    justifyContent: 'space-between',
+    paddingLeft: spacing.lg,
+    paddingRight: 6,
+    backgroundColor: '#fff',
+    borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    ...shadow,
   },
-  rowLabel: { color: colors.text, fontSize: 15, flex: 1, paddingRight: spacing.sm },
-  muted: { color: colors.textMuted },
-  delete: { borderColor: colors.danger, marginTop: spacing.lg },
+  urlText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.text,
+    letterSpacing: -0.2,
+    marginRight: spacing.sm,
+  },
+  copyBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: colors.text,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shareBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.text,
+    borderWidth: 1.5,
+    borderColor: colors.text,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionRow: { flexDirection: 'row', gap: spacing.md, marginVertical: spacing.xl },
+  flexBtn: { flex: 1, paddingVertical: spacing.sm + 2 },
+  sectionHeader: { fontSize: 18, fontWeight: '800', color: colors.text, marginBottom: spacing.md },
+  settingsGroup: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.md },
+  borderBottom: { borderBottomWidth: 1, borderBottomColor: colors.border },
+  rowLabel: { fontSize: 16, color: colors.text },
+  dangerButton: { marginTop: spacing.xxl, backgroundColor: colors.text },
 });

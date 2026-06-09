@@ -28,7 +28,7 @@ export function NumberPlate({ number = '', countryCode = 'IND', scale = 1 }) {
           style={[styles.number, { fontSize: 26 * scale, letterSpacing: scale }]}
           numberOfLines={1}
           adjustsFontSizeToFit>
-          {number}
+          {number || '1234567890'}
         </Text>
       </View>
     </View>
