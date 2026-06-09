@@ -12,24 +12,25 @@ import { useQuery } from '@tanstack/react-query';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  Menu,
   Bell,
   Plus,
   Car as CarIcon,
   ScanLine,
+  ShieldCheck,
   ChevronRight,
+  LucideIcon,
 } from 'lucide-react-native';
 import { Card } from '../components/Card';
-import { TagCard } from '../components/Card/TagCard';
 import { IconChip } from '../components/IconChip';
 import { PressableScale } from '../components/PressableScale';
 import { FadeInUp } from '../components/FadeInUp';
-import { listCars } from '../api/cars';
+import { listCars, Car } from '../api/cars';
 import { listNotifications } from '../api/notifications';
 import { actionMeta } from '../api/actionLabels';
 import { colors, radius, spacing, shadow, type } from '../theme';
-import { DashboardHeader } from '../components/headers/DashboardHeader';
 
-function carTitle(car) {
+function carTitle(car: Car): string {
   return (
     car.nickname ||
     [car.color, car.make, car.model].filter(Boolean).join(' ') ||
@@ -38,7 +39,7 @@ function carTitle(car) {
   );
 }
 
-function timeAgo(iso) {
+function timeAgo(iso: string): string {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
   if (m < 1) return 'just now';
   if (m < 60) return `${m} mins ago`;
@@ -47,7 +48,7 @@ function timeAgo(iso) {
   return `${Math.floor(h / 24)} days ago`;
 }
 
-export function HomeScreen({ navigation }) {
+export function HomeScreen({ navigation }: any) {
   const insets = useSafeAreaInsets();
 
   const cars = useQuery({ queryKey: ['cars'], queryFn: listCars });
@@ -67,14 +68,23 @@ export function HomeScreen({ navigation }) {
   const unread = activity.data?.filter(n => !n.readAt).length ?? 0;
   const feed = activity.data ?? [];
 
-  const openCar = id => navigation.navigate('CarDetail', { carId: id });
+  const openCar = (id: string) => navigation.navigate('CarDetail', { carId: id });
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.xs }]}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Top bar */}
         <FadeInUp delay={0}>
-          <DashboardHeader unread={unread} onPressBell={() => navigation.navigate('Notifications')} />
+          <View style={styles.topBar}>
+            <Pressable style={styles.iconChip} onPress={() => navigation.navigate('Profile')}>
+              <Menu size={20} color={colors.text} strokeWidth={2.2} />
+            </Pressable>
+            <Text style={styles.hello}>Hi there 👋</Text>
+            <Pressable style={styles.iconChip} onPress={() => navigation.navigate('Notifications')}>
+              <Bell size={20} color={colors.text} strokeWidth={2.2} />
+              {unread > 0 ? <View style={styles.dot} /> : null}
+            </Pressable>
+          </View>
         </FadeInUp>
 
         <FadeInUp delay={60}>
@@ -97,7 +107,23 @@ export function HomeScreen({ navigation }) {
           <FadeInUp delay={160}>
             <View style={styles.bento}>
               {hasTags ? (
-                <TagCard tag={tags[0]} onPress={() => openCar(tags[0].id)} />
+                <PressableScale style={styles.featured} onPress={() => openCar(tags[0].id)}>
+                  <View style={styles.featuredTop}>
+                    <View style={styles.featuredChip}>
+                      <CarIcon size={22} color={colors.primary} strokeWidth={2.2} />
+                    </View>
+                    <View style={styles.activePill}>
+                      <View style={styles.activeDot} />
+                      <Text style={styles.activeText}>Active</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.featuredTitle}>{carTitle(tags[0])}</Text>
+                  {tags[0].plate ? <Text style={styles.muted}>{tags[0].plate}</Text> : null}
+                  <View style={styles.featuredFoot}>
+                    <ShieldCheck size={14} color={colors.primary} strokeWidth={2.4} />
+                    <Text style={styles.featuredFootText}>Protected · tap for QR</Text>
+                  </View>
+                </PressableScale>
               ) : (
                 <PressableScale style={styles.featured} onPress={() => navigation.navigate('AddCar')}>
                   <View style={styles.featuredChip}>
@@ -175,7 +201,17 @@ export function HomeScreen({ navigation }) {
   );
 }
 
-function StatTile({ icon: Icon, value, label, onPress }) {
+function StatTile({
+  icon: Icon,
+  value,
+  label,
+  onPress,
+}: {
+  icon: LucideIcon;
+  value: number;
+  label: string;
+  onPress: () => void;
+}) {
   return (
     <PressableScale style={styles.tile} onPress={onPress}>
       <View style={styles.tileChip}>
@@ -188,7 +224,7 @@ function StatTile({ icon: Icon, value, label, onPress }) {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor:"rgb(247, 247, 247)", paddingHorizontal: spacing.md },
+  root: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: spacing.md },
   scroll: { paddingBottom: 120 },
 
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.sm },
@@ -229,8 +265,14 @@ const styles = StyleSheet.create({
     gap: 4,
     ...shadow,
   },
+  featuredTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
   featuredChip: { width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center' },
   featuredTitle: { fontSize: 18, fontWeight: '800', color: colors.text, letterSpacing: -0.3 },
+  featuredFoot: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: spacing.sm },
+  featuredFootText: { ...type.caption, color: colors.primary, fontWeight: '600' },
+  activePill: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: colors.surfaceAlt, paddingHorizontal: 9, paddingVertical: 5, borderRadius: radius.pill },
+  activeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.primary },
+  activeText: { color: colors.primaryDark, fontSize: 11, fontWeight: '700' },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   tile: {
