@@ -19,18 +19,17 @@ import {
   ScanLine,
   ShieldCheck,
   ChevronRight,
-  LucideIcon,
 } from 'lucide-react-native';
 import { Card } from '../components/Card';
 import { IconChip } from '../components/IconChip';
 import { PressableScale } from '../components/PressableScale';
 import { FadeInUp } from '../components/FadeInUp';
-import { listCars, Car } from '../api/cars';
+import { listCars } from '../api/cars';
 import { listNotifications } from '../api/notifications';
 import { actionMeta } from '../api/actionLabels';
 import { colors, radius, spacing, shadow, type } from '../theme';
 
-function carTitle(car: Car): string {
+function carTitle(car) {
   return (
     car.nickname ||
     [car.color, car.make, car.model].filter(Boolean).join(' ') ||
@@ -39,7 +38,7 @@ function carTitle(car: Car): string {
   );
 }
 
-function timeAgo(iso: string): string {
+function timeAgo(iso) {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
   if (m < 1) return 'just now';
   if (m < 60) return `${m} mins ago`;
@@ -48,7 +47,7 @@ function timeAgo(iso: string): string {
   return `${Math.floor(h / 24)} days ago`;
 }
 
-export function HomeScreen({ navigation }: any) {
+export function HomeScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
   const cars = useQuery({ queryKey: ['cars'], queryFn: listCars });
@@ -68,7 +67,7 @@ export function HomeScreen({ navigation }: any) {
   const unread = activity.data?.filter(n => !n.readAt).length ?? 0;
   const feed = activity.data ?? [];
 
-  const openCar = (id: string) => navigation.navigate('CarDetail', { carId: id });
+  const openCar = id => navigation.navigate('CarDetail', { carId: id });
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.xs }]}>
@@ -201,17 +200,7 @@ export function HomeScreen({ navigation }: any) {
   );
 }
 
-function StatTile({
-  icon: Icon,
-  value,
-  label,
-  onPress,
-}: {
-  icon: LucideIcon;
-  value: number;
-  label: string;
-  onPress: () => void;
-}) {
+function StatTile({ icon: Icon, value, label, onPress }) {
   return (
     <PressableScale style={styles.tile} onPress={onPress}>
       <View style={styles.tileChip}>

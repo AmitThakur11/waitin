@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LayoutGrid, Layers, QrCode, ShieldCheck, Settings, LucideIcon } from 'lucide-react-native';
+import { LayoutGrid, Layers, QrCode, ShieldCheck, Settings } from 'lucide-react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { AssetsScreen } from '../screens/AssetsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
@@ -12,7 +12,7 @@ import { colors, shadow } from '../theme';
 
 const Tab = createBottomTabNavigator();
 
-const ICONS: Record<string, LucideIcon> = {
+const ICONS = {
   Home: LayoutGrid,
   Assets: Layers,
   Scan: QrCode,
@@ -21,7 +21,7 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 /** Dark, floating pill tab bar; the focused tab sits in a green circle. */
-function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
+function FloatingTabBar({ state, navigation }) {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, 10) }]} pointerEvents="box-none">

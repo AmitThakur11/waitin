@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, ViewProps } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors, radius, shadow, spacing } from '../theme';
 
-type Props = ViewProps & { style?: ViewStyle; padded?: boolean };
-
 /** White rounded card with the standard soft shadow. */
-export function Card({ style, padded = true, children, ...rest }: Props) {
+export function Card({ style, padded = true, children, ...rest }) {
   return (
     <View style={[styles.card, padded && styles.padded, style]} {...rest}>
       {children}

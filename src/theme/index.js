@@ -28,9 +28,9 @@ export const colors = {
 
 // Brand gradient stops (used via react-native-svg).
 export const gradients = {
-  primary: ['#34D88C', '#1FBF73', '#149A5B'] as const,
-  primaryFab: ['#3FDB90', '#1FBF73'] as const,
-  hero: ['#34D88C', '#1FBF73', '#0E8A50'] as const,
+  primary: ['#34D88C', '#1FBF73', '#149A5B'],
+  primaryFab: ['#3FDB90', '#1FBF73'],
+  hero: ['#34D88C', '#1FBF73', '#0E8A50'],
 };
 
 // Translucent whites for glassmorphism over the gradient hero.
@@ -61,11 +61,11 @@ export const radius = {
 
 // Type ramp with Apple-ish tightening on large sizes.
 export const type = {
-  largeTitle: { fontSize: 32, fontWeight: '800' as const, letterSpacing: -0.6 },
-  title: { fontSize: 22, fontWeight: '800' as const, letterSpacing: -0.4 },
-  section: { fontSize: 18, fontWeight: '700' as const, letterSpacing: -0.3 },
-  body: { fontSize: 15, fontWeight: '600' as const, letterSpacing: -0.2 },
-  caption: { fontSize: 13, fontWeight: '500' as const, letterSpacing: -0.1 },
+  largeTitle: { fontSize: 32, fontWeight: '800', letterSpacing: -0.6 },
+  title: { fontSize: 22, fontWeight: '800', letterSpacing: -0.4 },
+  section: { fontSize: 18, fontWeight: '700', letterSpacing: -0.3 },
+  body: { fontSize: 15, fontWeight: '600', letterSpacing: -0.2 },
+  caption: { fontSize: 13, fontWeight: '500', letterSpacing: -0.1 },
 };
 
 // Light, subtle card shadow.
@@ -75,7 +75,7 @@ export const shadow = {
   shadowOpacity: 0.045,
   shadowRadius: 8,
   elevation: 2,
-} as const;
+};
 
 // Even tighter shadow for small elements.
 export const shadowSm = {
@@ -84,4 +84,4 @@ export const shadowSm = {
   shadowOpacity: 0.04,
   shadowRadius: 5,
   elevation: 1,
-} as const;
+};

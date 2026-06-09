@@ -1,17 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { LucideIcon } from 'lucide-react-native';
 import { colors, radius } from '../theme';
 
-type Props = {
-  icon: LucideIcon;
-  color?: string;
-  bg?: string;
-  size?: number;
-};
-
 /** Rounded-square tinted chip holding a Lucide icon (asset/section icons). */
-export function IconChip({ icon: Icon, color = colors.primary, bg = colors.chipBlue, size = 44 }: Props) {
+export function IconChip({ icon: Icon, color = colors.primary, bg = colors.chipBlue, size = 44 }) {
   return (
     <View
       style={[

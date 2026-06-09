@@ -1,13 +1,5 @@
 import React, { useRef } from 'react';
-import { Animated, Pressable, ViewStyle, StyleProp } from 'react-native';
-
-type Props = {
-  children: React.ReactNode;
-  onPress?: () => void;
-  style?: StyleProp<ViewStyle>;
-  scaleTo?: number;
-  disabled?: boolean;
-};
+import { Animated, Pressable } from 'react-native';
 
 // Single element that is both pressable and animated, so layout styles (width,
 // flex, margin) on `style` apply to the touchable itself — important for
@@ -18,10 +10,10 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
  * Pressable that springs down on touch — the tactile feel of iOS controls.
  * Uses the native driver so it stays at 60fps off the JS thread.
  */
-export function PressableScale({ children, onPress, style, scaleTo = 0.965, disabled }: Props) {
+export function PressableScale({ children, onPress, style, scaleTo = 0.965, disabled }) {
   const scale = useRef(new Animated.Value(1)).current;
 
-  const animate = (to: number) =>
+  const animate = to =>
     Animated.spring(scale, {
       toValue: to,
       useNativeDriver: true,

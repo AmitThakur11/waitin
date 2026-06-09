@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
 import { TextField } from '../components/TextField';
-import { createCar, CarInput } from '../api/cars';
-import { RootStackParamList } from '../navigation/types';
+import { createCar } from '../api/cars';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'AddCar'>;
-
-export function AddCarScreen({ navigation }: Props) {
+export function AddCarScreen({ navigation }) {
   const qc = useQueryClient();
-  const [form, setForm] = useState<CarInput>({});
+  const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
 
-  const set = (key: keyof CarInput) => (v: string) =>
-    setForm(f => ({ ...f, [key]: v }));
+  const set = key => v => setForm(f => ({ ...f, [key]: v }));
 
   async function onSave() {
     setSaving(true);
@@ -24,7 +19,7 @@ export function AddCarScreen({ navigation }: Props) {
       const car = await createCar(form);
       await qc.invalidateQueries({ queryKey: ['cars'] });
       navigation.replace('CarDetail', { carId: car.id });
-    } catch (e: any) {
+    } catch (e) {
       const msg =
         e?.response?.data?.message?.[0] ?? e?.response?.data?.message ?? 'Could not save the car.';
       Alert.alert('Hmm', String(msg));

@@ -3,15 +3,8 @@ import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing } from '../theme';
 
-type Props = {
-  title?: string;
-  subtitle?: string;
-  children?: React.ReactNode;
-  scroll?: boolean;
-};
-
 /** Common screen shell: safe-area padding, dark background, optional header. */
-export function Screen({ title, subtitle, children, scroll = true }: Props) {
+export function Screen({ title, subtitle, children, scroll = true }) {
   const insets = useSafeAreaInsets();
   const Body = scroll ? ScrollView : View;
   return (

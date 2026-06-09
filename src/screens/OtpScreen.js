@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { Alert, Text, StyleSheet } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
 import { TextField } from '../components/TextField';
 import { verifyOtp } from '../api/auth';
 import { colors, spacing } from '../theme';
-import { RootStackParamList } from '../navigation/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Otp'>;
-
-export function OtpScreen({ route, navigation }: Props) {
+export function OtpScreen({ route, navigation }) {
   const { phone, devCode } = route.params;
   const [code, setCode] = useState(devCode ?? '');
   const [loading, setLoading] = useState(false);
@@ -20,7 +16,7 @@ export function OtpScreen({ route, navigation }: Props) {
     try {
       await verifyOtp(phone, code.trim());
       navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
-    } catch (e: any) {
+    } catch (e) {
       const msg =
         e?.response?.data?.message?.[0] ??
         e?.response?.data?.message ??

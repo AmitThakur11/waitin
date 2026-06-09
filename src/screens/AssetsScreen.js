@@ -6,16 +6,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Car as CarIcon, ChevronRight, Plus } from 'lucide-react-native';
 import { Card } from '../components/Card';
 import { IconChip } from '../components/IconChip';
-import { listCars, Car } from '../api/cars';
+import { listCars } from '../api/cars';
 import { colors, radius, spacing, shadow } from '../theme';
 
-function carTitle(car: Car): string {
+function carTitle(car) {
   return (
     car.nickname || [car.color, car.make, car.model].filter(Boolean).join(' ') || car.displayLabel || 'Tag'
   );
 }
 
-export function AssetsScreen({ navigation }: any) {
+export function AssetsScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const cars = useQuery({ queryKey: ['cars'], queryFn: listCars });
 
@@ -38,7 +38,7 @@ export function AssetsScreen({ navigation }: any) {
         {cars.isLoading ? (
           <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.xl }} />
         ) : (cars.data?.length ?? 0) > 0 ? (
-          cars.data!.map(car => (
+          cars.data.map(car => (
             <Pressable key={car.id} onPress={() => navigation.navigate('CarDetail', { carId: car.id })}>
               <Card style={styles.row}>
                 <IconChip icon={CarIcon} />

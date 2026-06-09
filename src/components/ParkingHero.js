@@ -9,7 +9,7 @@ import { colors, radius, spacing, shadow } from '../theme';
  * parked cars, and the owner's car highlighted in a floating green slot. Echoes
  * the reference's 3D lot illustration without needing an image asset.
  */
-export function ParkingHero({ label }: { label?: string }) {
+export function ParkingHero({ label }) {
   return (
     <View style={styles.card}>
       {/* faint parking grid */}

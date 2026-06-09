@@ -3,14 +3,8 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { QrCode, Bell, User } from 'lucide-react-native';
 import { colors, radius, spacing } from '../theme';
 
-type Props = {
-  unread?: number;
-  onPressBell?: () => void;
-  onPressAvatar?: () => void;
-};
-
 /** Top bar: ContactKaro wordmark + notification bell + avatar. */
-export function DashboardHeader({ unread = 0, onPressBell, onPressAvatar }: Props) {
+export function DashboardHeader({ unread = 0, onPressBell, onPressAvatar }) {
   return (
     <View style={styles.row}>
       <View style={styles.brand}>

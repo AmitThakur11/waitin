@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Bell, Shield, HelpCircle, ChevronRight, User, LucideIcon } from 'lucide-react-native';
+import { Bell, Shield, HelpCircle, ChevronRight, User } from 'lucide-react-native';
 import { Card } from '../components/Card';
 import { clearTokens } from '../api/tokenStore';
 import { colors, radius, spacing } from '../theme';
 
-export function ProfileScreen({ navigation }: any) {
+export function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
   async function signOut() {
@@ -14,7 +14,7 @@ export function ProfileScreen({ navigation }: any) {
     navigation.getParent()?.reset({ index: 0, routes: [{ name: 'Onboarding' }] });
   }
 
-  const rows: { icon: LucideIcon; label: string; onPress: () => void }[] = [
+  const rows = [
     { icon: Bell, label: 'Notifications', onPress: () => navigation.navigate('Notifications') },
     { icon: Shield, label: 'Privacy', onPress: () => navigation.navigate('Privacy') },
     { icon: HelpCircle, label: 'Help & Support', onPress: () => {} },

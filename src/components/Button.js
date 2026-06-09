@@ -1,15 +1,8 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
 import { colors, radius, spacing } from '../theme';
 
-type Props = {
-  label: string;
-  onPress?: () => void;
-  variant?: 'primary' | 'ghost';
-  style?: ViewStyle;
-};
-
-export function Button({ label, onPress, variant = 'primary', style }: Props) {
+export function Button({ label, onPress, variant = 'primary', style }) {
   return (
     <Pressable
       onPress={onPress}

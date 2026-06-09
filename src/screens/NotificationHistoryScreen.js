@@ -4,12 +4,12 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect } from '@react-navigation/native';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
-import { listNotifications, markAllRead, NotificationItem } from '../api/notifications';
+import { listNotifications, markAllRead } from '../api/notifications';
 import { actionMeta } from '../api/actionLabels';
 import { IconChip } from '../components/IconChip';
 import { colors, radius, spacing } from '../theme';
 
-function timeAgo(iso: string): string {
+function timeAgo(iso) {
   const diff = Date.now() - new Date(iso).getTime();
   const m = Math.floor(diff / 60000);
   if (m < 1) return 'just now';
@@ -19,7 +19,7 @@ function timeAgo(iso: string): string {
   return `${Math.floor(h / 24)}d ago`;
 }
 
-function carName(n: NotificationItem): string {
+function carName(n) {
   return n.car.nickname || n.car.displayLabel || 'your car';
 }
 

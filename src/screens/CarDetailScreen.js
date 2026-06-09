@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
 import {
@@ -19,20 +18,16 @@ import {
   rotateQr,
   deleteCar,
   updateDisplay,
-  DisplaySettings,
 } from '../api/cars';
 import { colors, radius, spacing } from '../theme';
-import { RootStackParamList } from '../navigation/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'CarDetail'>;
-
-const TOGGLES: { key: keyof DisplaySettings; label: string }[] = [
+const TOGGLES = [
   { key: 'showLabel', label: 'Show label on scan page' },
   { key: 'allowMessage', label: 'Allow text messages' },
   { key: 'allowCall', label: 'Allow anonymous call' },
 ];
 
-export function CarDetailScreen({ route, navigation }: Props) {
+export function CarDetailScreen({ route, navigation }) {
   const { carId } = route.params;
   const qc = useQueryClient();
 
@@ -61,7 +56,7 @@ export function CarDetailScreen({ route, navigation }: Props) {
     ]);
   }
 
-  async function onToggle(key: keyof DisplaySettings, value: boolean) {
+  async function onToggle(key, value) {
     await updateDisplay(carId, { [key]: value });
     qc.invalidateQueries({ queryKey: ['car', carId] });
   }

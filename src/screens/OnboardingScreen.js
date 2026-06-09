@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { QrCode } from 'lucide-react-native';
 import { PressableScale } from '../components/PressableScale';
 import { GradientBackground } from '../components/GradientBackground';
 import { requestOtp } from '../api/auth';
 import { colors, radius, spacing, shadow, type, gradients } from '../theme';
-import { RootStackParamList } from '../navigation/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Onboarding'>;
-
-export function OnboardingScreen({ navigation }: Props) {
+export function OnboardingScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const [digits, setDigits] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Keep only digits, cap at the 10 a mobile Indian number has.
-  const onChange = (text: string) => setDigits(text.replace(/[^0-9]/g, '').slice(0, 10));
+  const onChange = text => setDigits(text.replace(/[^0-9]/g, '').slice(0, 10));
 
   const valid = digits.length === 10;
 
@@ -31,7 +27,8 @@ export function OnboardingScreen({ navigation }: Props) {
     try {
       const { devCode } = await requestOtp(phone);
       navigation.navigate('Otp', { phone, devCode });
-    } catch (e: any) {
+    } catch (e) {
+      console.log(e);
       const msg =
         e?.response?.data?.message?.[0] ??
         e?.response?.data?.message ??

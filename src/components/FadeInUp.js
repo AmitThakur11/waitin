@@ -1,15 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, ViewStyle, StyleProp } from 'react-native';
-
-type Props = {
-  children: React.ReactNode;
-  delay?: number;
-  offset?: number;
-  style?: StyleProp<ViewStyle>;
-};
+import { Animated, Easing } from 'react-native';
 
 /** Fades + lifts content in on mount. Stagger by passing increasing `delay`. */
-export function FadeInUp({ children, delay = 0, offset = 18, style }: Props) {
+export function FadeInUp({ children, delay = 0, offset = 18, style }) {
   const t = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
