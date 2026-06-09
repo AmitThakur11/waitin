@@ -37,7 +37,6 @@ export function NumberPlate({ number = '', countryCode = 'IND', scale = 1 }) {
 
 const styles = StyleSheet.create({
   rim: {
-    alignSelf: 'flex-start',
     backgroundColor: PLATE_RIM,
     borderRadius: 14,
     padding: 3,
@@ -68,6 +67,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   number: {
+    flex: 1,
+    minWidth: 0,
     color: PLATE_TEXT,
     fontSize: 26,
     fontWeight: '800',

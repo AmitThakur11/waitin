@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   carImage: { width: '100%', height: 140, alignSelf: 'center' },
 
   bottomRow: { flexDirection: 'row', alignItems: 'center' },
-  plateCol: { flex: 4, alignItems: 'flex-start' },
+  plateCol: { flex: 4, alignItems: 'stretch', justifyContent: 'center' },
   divider: {
     width: StyleSheet.hairlineWidth,
     alignSelf: 'stretch',
