@@ -2,35 +2,35 @@
  * ContactKaro design tokens — light, Apple-inspired theme.
  */
 export const colors = {
-  bg: '#F1F5F3', // app background (soft mint-grey)
+  bg: '#F5F5F5', // app background (neutral grey)
   bgElevated: '#FFFFFF',
   surface: '#FFFFFF', // cards
-  surfaceAlt: '#E8F6EE', // subtle green tint (info cards, icon chips)
-  primary: '#1FBF73', // emerald accent
-  primaryDark: '#149A5B',
+  surfaceAlt: '#F0F0F0', // subtle neutral tint (info cards, icon chips)
+  primary: '#000000', // black accent
+  primaryDark: '#000000',
   primaryText: '#FFFFFF',
-  text: '#10211A', // near-black headings (warm)
-  textMuted: '#73837C', // secondary text
-  textFaint: '#A4B1AB',
-  border: '#E6ECE9',
-  hairline: '#EEF2F0',
+  text: '#111111', // near-black headings
+  textMuted: '#737373', // secondary text
+  textFaint: '#A6A6A6',
+  border: '#E6E6E6',
+  hairline: '#EEEEEE',
   danger: '#FF3B30', // iOS system red
   dangerSoft: '#FFE9E7',
-  success: '#1FBF73',
+  success: '#000000',
   warning: '#FF9F0A',
-  chipBlue: '#E2F6EC', // light-green accent chip (kept key for compat)
+  chipBlue: '#F0F0F0', // light neutral accent chip (kept key for compat)
   chipOrange: '#FFF1E2',
   iconOrange: '#FF9500',
   // Dark floating tab bar
-  tabBar: '#10211A',
-  tabInactive: '#8FA39A',
+  tabBar: '#111111',
+  tabInactive: '#9A9A9A',
 };
 
 // Brand gradient stops (used via react-native-svg).
 export const gradients = {
-  primary: ['#34D88C', '#1FBF73', '#149A5B'],
-  primaryFab: ['#3FDB90', '#1FBF73'],
-  hero: ['#34D88C', '#1FBF73', '#0E8A50'],
+  primary: ['#3A3A3A', '#1A1A1A', '#000000'],
+  primaryFab: ['#3A3A3A', '#000000'],
+  hero: ['#3A3A3A', '#1A1A1A', '#000000'],
 };
 
 // Translucent whites for glassmorphism over the gradient hero.

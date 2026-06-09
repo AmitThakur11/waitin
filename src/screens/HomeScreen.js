@@ -23,6 +23,7 @@ import { TagCard } from '../components/Card/TagCard';
 import { IconChip } from '../components/IconChip';
 import { PressableScale } from '../components/PressableScale';
 import { FadeInUp } from '../components/FadeInUp';
+import { Shine } from '../components/Shine';
 import { listCars } from '../api/cars';
 import { listNotifications } from '../api/notifications';
 import { actionMeta } from '../api/actionLabels';
@@ -71,14 +72,19 @@ export function HomeScreen({ navigation }) {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.xs }]}>
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Top bar */}
-        <FadeInUp delay={0}>
-          <DashboardHeader unread={unread} onPressBell={() => navigation.navigate('Notifications')} />
-        </FadeInUp>
+      {/* Fixed top bar */}
+      <DashboardHeader unread={unread} onPressBell={() => navigation.navigate('Notifications')} />
 
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <FadeInUp delay={60}>
-          <Text style={styles.display}>Keep your car{'\n'}always reachable</Text>
+          <View style={styles.displayRow}>
+            <Text style={styles.display}>Keep your car{'\n'}always reachable</Text>
+            <PressableScale style={styles.addTagBtn} onPress={() => navigation.navigate('AddCar')}>
+              <Plus size={18} color={colors.text} strokeWidth={2.6} />
+              <Text style={styles.addTagBtnText}>Add tag</Text>
+              <Shine />
+            </PressableScale>
+          </View>
         </FadeInUp>
 
         {/* Bento */}
@@ -124,14 +130,6 @@ export function HomeScreen({ navigation }) {
 
                 <StatTile icon={ScanLine} value={scanCount} label="Scans" onPress={() => navigation.navigate('Notifications')} />
                 <StatTile icon={Bell} value={unread} label="Alerts" onPress={() => navigation.navigate('Notifications')} />
-
-                <PressableScale style={[styles.tile, styles.addTile]} onPress={() => navigation.navigate('AddCar')}>
-                  <View style={styles.tileChip}>
-                    <Plus size={18} color={colors.primary} strokeWidth={2.6} />
-                  </View>
-                  <Text style={styles.tileTitle}>Add tag</Text>
-                  <Text style={styles.muted}>New QR</Text>
-                </PressableScale>
               </View>
             </View>
           </FadeInUp>
@@ -148,7 +146,7 @@ export function HomeScreen({ navigation }) {
         </FadeInUp>
 
         {feed.length === 0 ? (
-          <Card>
+          <Card style={styles.emptyCard}>
             <Text style={styles.muted}>No scans yet. Share a tag to see activity.</Text>
           </Card>
         ) : (
@@ -159,7 +157,7 @@ export function HomeScreen({ navigation }) {
                 <PressableScale style={styles.rowWrap}>
                   <Card style={styles.activityRow}>
                     <IconChip icon={a.icon} color={a.color} bg={a.color + '14'} size={40} />
-                    <View style={styles.flex}>
+                    <View style={styles.activityText}>
                       <Text style={styles.activityTitle}>{a.text}</Text>
                       <Text style={styles.muted}>{timeAgo(n.createdAt)}</Text>
                     </View>
@@ -177,18 +175,20 @@ export function HomeScreen({ navigation }) {
 
 function StatTile({ icon: Icon, value, label, onPress }) {
   return (
-    <PressableScale style={styles.tile} onPress={onPress}>
+    <PressableScale style={[styles.tile, styles.statTile]} onPress={onPress}>
       <View style={styles.tileChip}>
         <Icon size={18} color={colors.primary} strokeWidth={2.2} />
       </View>
-      <Text style={styles.tileValue}>{value}</Text>
-      <Text style={styles.muted}>{label}</Text>
+      <View style={styles.statData}>
+        <Text style={styles.tileValue}>{value}</Text>
+        <Text style={styles.muted}>{label}</Text>
+      </View>
     </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor:"rgb(247, 247, 247)", paddingHorizontal: spacing.md },
+  root: { flex: 1, backgroundColor: '#F7F7F7', paddingHorizontal: spacing.md },
   scroll: { paddingBottom: 120 },
 
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.sm },
@@ -213,7 +213,27 @@ const styles = StyleSheet.create({
     borderColor: colors.surfaceAlt,
   },
 
-  display: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.7, lineHeight: 34, marginTop: spacing.xs, marginBottom: spacing.sm },
+  displayRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  display: { flex: 1, fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.7, lineHeight: 34 },
+  addTagBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.text,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+  },
+  addTagBtnText: { color: colors.text, fontSize: 13, fontWeight: '700', letterSpacing: -0.2 },
 
   section: { ...type.section, color: colors.text },
   bentoRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: spacing.md, marginBottom: spacing.sm },
@@ -235,22 +255,42 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   tile: {
     width: '48.5%',
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    padding: spacing.md,
-    gap: 3,
-    ...shadow,
+    backgroundColor: 'rgba(255,255,255,0.45)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.65)',
+    padding: spacing.sm + 2,
+    gap: 2,
   },
-  addTile: { borderStyle: 'dashed', borderColor: colors.primary, backgroundColor: colors.surfaceAlt },
-  tileChip: { width: 34, height: 34, borderRadius: 10, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
-  tileTitle: { ...type.body, fontSize: 14, color: colors.text },
-  tileValue: { fontSize: 22, fontWeight: '800', color: colors.text, letterSpacing: -0.4 },
+  tileChip: { width: 30, height: 30, borderRadius: 9, backgroundColor: colors.surfaceAlt, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  statTile: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' },
+  statData: { alignItems: 'flex-start' },
+  tileTitle: { ...type.body, fontSize: 13, color: colors.text },
+  tileValue: { fontSize: 20, fontWeight: '800', color: colors.text, letterSpacing: -0.4 },
 
   flex: { flex: 1 },
+  activityText: { flex: 1, gap: 3 },
   muted: { ...type.caption, color: colors.textMuted, lineHeight: 17 },
   rowWrap: { marginBottom: spacing.sm },
-  activityRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.sm + 2 },
+  emptyCard: {
+    backgroundColor: 'rgba(255,255,255,0.45)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.65)',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  activityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.sm + 2,
+    backgroundColor: 'rgba(255,255,255,0.45)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.65)',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   activityTitle: { ...type.body, fontSize: 15, color: colors.text },
 });

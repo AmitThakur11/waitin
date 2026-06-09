@@ -38,7 +38,7 @@ function FloatingTabBar({ state, navigation }) {
               <View style={[styles.circle, focused && styles.circleActive]}>
                 <Icon
                   size={focused ? 23 : 22}
-                  color={focused ? '#fff' : colors.tabInactive}
+                  color={focused ? '#000' : colors.tabInactive}
                   strokeWidth={focused ? 2.4 : 2}
                 />
               </View>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   circleActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#fff',
     borderRadius: 999,
   },
 });
