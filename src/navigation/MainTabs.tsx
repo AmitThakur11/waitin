@@ -1,89 +1,100 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, Pressable, StyleSheet } from 'react-native';
+import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LayoutGrid, Layers, QrCode, ShieldCheck, Settings, LucideIcon } from 'lucide-react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { AssetsScreen } from '../screens/AssetsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { PrivacyScreen } from '../screens/PrivacyScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
-import { PressableScale } from '../components/PressableScale';
-import { GradientBackground } from '../components/GradientBackground';
-import { colors, shadow, gradients } from '../theme';
+import { colors, shadow } from '../theme';
 
 const Tab = createBottomTabNavigator();
 
-function TabIcon({ icon: Icon, label, focused }: { icon: LucideIcon; label: string; focused: boolean }) {
-  const color = focused ? colors.primary : colors.textMuted;
+const ICONS: Record<string, LucideIcon> = {
+  Home: LayoutGrid,
+  Assets: Layers,
+  Scan: QrCode,
+  Privacy: ShieldCheck,
+  Profile: Settings,
+};
+
+/** Dark, floating pill tab bar; the focused tab sits in a green circle. */
+function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.tabItem}>
-      <Icon size={22} color={color} strokeWidth={focused ? 2.4 : 2} />
-      <Text style={[styles.tabLabel, { color }]}>{label}</Text>
+    <View style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, 10) }]} pointerEvents="box-none">
+      <View style={styles.bar}>
+        {state.routes.map((route, i) => {
+          const focused = state.index === i;
+          const Icon = ICONS[route.name] ?? LayoutGrid;
+          const onPress = () => {
+            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+            if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
+          };
+          return (
+            <Pressable key={route.key} style={styles.tab} onPress={onPress} hitSlop={6}>
+              <View style={[styles.circle, focused && styles.circleActive]}>
+                <Icon
+                  size={focused ? 23 : 22}
+                  color={focused ? '#fff' : colors.tabInactive}
+                  strokeWidth={focused ? 2.4 : 2}
+                />
+              </View>
+            </Pressable>
+          );
+        })}
+      </View>
     </View>
   );
 }
-
-/** Raised circular FAB used for the center Scan tab. */
-function ScanFab({ onPress }: { onPress?: () => void }) {
-  return (
-    <View style={styles.fabWrap} pointerEvents="box-none">
-      <PressableScale style={styles.fab} onPress={onPress} scaleTo={0.9}>
-        <GradientBackground id="fabGrad" colors={gradients.primaryFab} radius={30} />
-        <View style={styles.fabInner}>
-          <QrCode size={26} color="#fff" strokeWidth={2.4} />
-        </View>
-      </PressableScale>
-    </View>
-  );
-}
-
-const renderTab = (icon: LucideIcon, label: string) =>
-  function TabBarIcon({ focused }: { focused: boolean }) {
-    return <TabIcon icon={icon} label={label} focused={focused} />;
-  };
 
 export function MainTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarStyle: styles.tabBar,
-      }}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: renderTab(LayoutGrid, 'Home') }} />
-      <Tab.Screen name="Assets" component={AssetsScreen} options={{ tabBarIcon: renderTab(Layers, 'Assets') }} />
-      <Tab.Screen
-        name="Scan"
-        component={ScanScreen}
-        options={{ tabBarButton: props => <ScanFab onPress={props.onPress as any} /> }}
-      />
-      <Tab.Screen name="Privacy" component={PrivacyScreen} options={{ tabBarIcon: renderTab(ShieldCheck, 'Privacy') }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: renderTab(Settings, 'Profile') }} />
+      tabBar={props => <FloatingTabBar {...props} />}
+      screenOptions={{ headerShown: false }}>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Assets" component={AssetsScreen} />
+      <Tab.Screen name="Scan" component={ScanScreen} />
+      <Tab.Screen name="Privacy" component={PrivacyScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: colors.surface,
-    borderTopColor: colors.border,
-    height: 64,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  tabItem: { alignItems: 'center', justifyContent: 'center', gap: 3, width: 64 },
-  tabLabel: { fontSize: 11, fontWeight: '600' },
-  fabWrap: { flex: 1, alignItems: 'center' },
-  fab: {
+  wrap: {
     position: 'absolute',
-    top: -24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.primary,
-    borderWidth: 4,
-    borderColor: colors.surface,
-    ...shadow,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
   },
-  fabInner: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
+  bar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.tabBar,
+    borderRadius: 36,
+    paddingHorizontal: 12,
+    height: 64,
+    width: '90%',
+    ...shadow,
+    shadowOpacity: 0.18,
+    shadowRadius: 22,
+  },
+  tab: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  circle: {
+    width: 48,
+    height: 48,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circleActive: {
+    backgroundColor: colors.primary,
+    borderRadius: 999,
+  },
 });

@@ -56,7 +56,7 @@ export function ProfileScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   title: { fontSize: 24, fontWeight: '800', color: colors.text, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
-  content: { padding: spacing.md, gap: spacing.md },
+  content: { padding: spacing.md, gap: spacing.md, paddingBottom: 120 },
   profile: { alignItems: 'center', gap: 4, paddingVertical: spacing.lg },
   avatar: {
     width: 72,

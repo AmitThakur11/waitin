@@ -9,6 +9,11 @@ type Props = {
   disabled?: boolean;
 };
 
+// Single element that is both pressable and animated, so layout styles (width,
+// flex, margin) on `style` apply to the touchable itself — important for
+// percentage-width grid tiles.
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 /**
  * Pressable that springs down on touch — the tactile feel of iOS controls.
  * Uses the native driver so it stays at 60fps off the JS thread.
@@ -25,12 +30,13 @@ export function PressableScale({ children, onPress, style, scaleTo = 0.965, disa
     }).start();
 
   return (
-    <Pressable
+    <AnimatedPressable
       disabled={disabled}
       onPress={onPress}
       onPressIn={() => animate(scaleTo)}
-      onPressOut={() => animate(1)}>
-      <Animated.View style={[style, { transform: [{ scale }] }]}>{children}</Animated.View>
-    </Pressable>
+      onPressOut={() => animate(1)}
+      style={[style, { transform: [{ scale }] }]}>
+      {children}
+    </AnimatedPressable>
   );
 }

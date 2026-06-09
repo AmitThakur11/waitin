@@ -2,32 +2,35 @@
  * ContactKaro design tokens — light, Apple-inspired theme.
  */
 export const colors = {
-  bg: '#F2F4F8', // app background (soft cool grey)
+  bg: '#F1F5F3', // app background (soft mint-grey)
   bgElevated: '#FFFFFF',
   surface: '#FFFFFF', // cards
-  surfaceAlt: '#EEF3FF', // subtle blue tint (info cards, icon chips)
-  primary: '#2F6BFF', // brand blue
-  primaryDark: '#1D4ED8',
+  surfaceAlt: '#E8F6EE', // subtle green tint (info cards, icon chips)
+  primary: '#1FBF73', // emerald accent
+  primaryDark: '#149A5B',
   primaryText: '#FFFFFF',
-  text: '#0B1220', // near-black headings
-  textMuted: '#7A869A', // secondary text
-  textFaint: '#A6B0C0',
-  border: '#E7ECF3',
-  hairline: '#EEF1F6',
+  text: '#10211A', // near-black headings (warm)
+  textMuted: '#73837C', // secondary text
+  textFaint: '#A4B1AB',
+  border: '#E6ECE9',
+  hairline: '#EEF2F0',
   danger: '#FF3B30', // iOS system red
   dangerSoft: '#FFE9E7',
-  success: '#34C759', // iOS system green
+  success: '#1FBF73',
   warning: '#FF9F0A',
-  chipBlue: '#E5EEFF',
+  chipBlue: '#E2F6EC', // light-green accent chip (kept key for compat)
   chipOrange: '#FFF1E2',
   iconOrange: '#FF9500',
+  // Dark floating tab bar
+  tabBar: '#10211A',
+  tabInactive: '#8FA39A',
 };
 
 // Brand gradient stops (used via react-native-svg).
 export const gradients = {
-  primary: ['#3D7BFF', '#2F6BFF', '#1F57E6'] as const,
-  primaryFab: ['#4E89FF', '#2F6BFF'] as const,
-  hero: ['#4C84FF', '#2F6BFF', '#1A40BE'] as const,
+  primary: ['#34D88C', '#1FBF73', '#149A5B'] as const,
+  primaryFab: ['#3FDB90', '#1FBF73'] as const,
+  hero: ['#34D88C', '#1FBF73', '#0E8A50'] as const,
 };
 
 // Translucent whites for glassmorphism over the gradient hero.
@@ -49,10 +52,10 @@ export const spacing = {
 };
 
 export const radius = {
-  sm: 10,
-  md: 16,
-  lg: 22,
-  xl: 28,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
   pill: 999,
 };
 
@@ -65,20 +68,20 @@ export const type = {
   caption: { fontSize: 13, fontWeight: '500' as const, letterSpacing: -0.1 },
 };
 
-// Soft, layered card shadow.
+// Light, subtle card shadow.
 export const shadow = {
   shadowColor: '#1B2A4A',
-  shadowOffset: { width: 0, height: 8 },
-  shadowOpacity: 0.08,
-  shadowRadius: 18,
-  elevation: 4,
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.045,
+  shadowRadius: 8,
+  elevation: 2,
 } as const;
 
-// Tighter shadow for small/raised elements.
+// Even tighter shadow for small elements.
 export const shadowSm = {
   shadowColor: '#1B2A4A',
-  shadowOffset: { width: 0, height: 3 },
-  shadowOpacity: 0.07,
-  shadowRadius: 8,
-  elevation: 3,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.04,
+  shadowRadius: 5,
+  elevation: 1,
 } as const;

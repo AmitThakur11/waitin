@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     ...shadow,
   },
   addText: { color: '#fff', fontWeight: '700' },
-  content: { padding: spacing.md, gap: spacing.sm },
+  content: { padding: spacing.md, gap: spacing.sm, paddingBottom: 120 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   flex: { flex: 1 },
   rowTitle: { fontSize: 16, fontWeight: '700', color: colors.text },

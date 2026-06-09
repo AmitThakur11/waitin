@@ -35,7 +35,7 @@ export function PrivacyScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   title: { fontSize: 24, fontWeight: '800', color: colors.text, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
-  content: { padding: spacing.md, gap: spacing.sm },
+  content: { padding: spacing.md, gap: spacing.sm, paddingBottom: 120 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   flex: { flex: 1 },
   rowTitle: { fontSize: 15, fontWeight: '700', color: colors.text, marginBottom: 2 },
